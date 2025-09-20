@@ -1,59 +1,54 @@
 #!/usr/bin/env python3
 """
-Module for calculating definiteness of a matrix
+Module to determine the definiteness of a square numpy matrix.
 """
-
 
 import numpy as np
 
 
 def definiteness(matrix):
     """
-    Determines the definiteness of a matrix.
+    Determines the definiteness of a square numpy.ndarray.
 
-    Parameters:
-    matrix (numpy.ndarray): A square matrix to check.
+    Args:
+        matrix (numpy.ndarray): matrix to check
 
     Returns:
-    str: A string describing the definiteness of the matrix,
-    or None if the matrix is invalid.
-
+        str or None: 'Positive definite', 'Positive semi-definite',
+                     'Negative definite', 'Negative semi-definite',
+                     'Indefinite', or None if invalid
+                     
     Raises:
-    TypeError: If the input is not a numpy.ndarray.
+        TypeError: if matrix is not a numpy.ndarray
     """
-
-    # Check if matrix is a numpy ndarray
     if not isinstance(matrix, np.ndarray):
         raise TypeError("matrix must be a numpy.ndarray")
 
-    # Debugging: Print the matrix type and shape for validation
-    print(f"Matrix type: {type(matrix)}")
-    print(f"Matrix shape: {matrix.shape}")
-
-    # Check if the matrix is square and valid
     if matrix.ndim != 2 or matrix.shape[0] != matrix.shape[1]:
-        print("Matrix is not square or has invalid dimensions.")
         return None
 
-    # Check if the matrix is symmetric
-    if not np.allclose(matrix, matrix.T):
-        print("Matrix is not symmetric.")
+    if matrix.size == 0:
         return None
 
-    # Calculate the eigenvalues
-    eigenvalues = np.linalg.eigvals(matrix)
+    try:
+        eigvals = np.linalg.eigvals(matrix)
+    except np.linalg.LinAlgError:
+        return None
 
-    # Debugging: Print the eigenvalues for inspection
-    print(f"Eigenvalues: {eigenvalues}")
+    pos = np.all(eigvals > 0)
+    pos_semi = np.all(eigvals >= 0)
+    neg = np.all(eigvals < 0)
+    neg_semi = np.all(eigvals <= 0)
 
-    # Check the eigenvalues to determine the definiteness
-    if np.all(eigenvalues > 0):
+    if pos:
         return "Positive definite"
-    elif np.all(eigenvalues >= 0):
+    if pos_semi and not pos:
         return "Positive semi-definite"
-    elif np.all(eigenvalues < 0):
+    if neg:
         return "Negative definite"
-    elif np.all(eigenvalues <= 0):
+    if neg_semi and not neg:
         return "Negative semi-definite"
-    else:
+    if not pos_semi and not neg_semi:
         return "Indefinite"
+
+    return None
