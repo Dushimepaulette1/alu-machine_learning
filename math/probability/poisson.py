@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-# defines Poisson class that represents Poisson distribution
+"""Defines Poisson class that represents Poisson distribution."""
 
 
 class Poisson:
@@ -92,4 +92,3 @@ class Poisson:
         for i in range(k + 1):
             cdf += self.pmf(i)
         return cdf
-
