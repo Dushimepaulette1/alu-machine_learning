@@ -1,5 +1,5 @@
-
-n that calculates the marginal
+#!/usr/bin/env python3
+""""Function that calculates the marginal
 probability of obtaining the data"""
 
 import numpy as np
